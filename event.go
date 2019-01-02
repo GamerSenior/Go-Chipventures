@@ -23,31 +23,56 @@ const (
 	WINDOWEVENT
 )
 
-// Ievent é a interface que que todos os eventos devem implementar
-type Ievent interface {
-	Log() string
+// Event é a estrutura básica de um evento
+type Event struct {
+	name string
+	// id        eventID
+	// category  eventCategory
+	callbacks []interface{}
 }
 
-type event struct {
-	id       eventID
-	category eventCategory
-	name     string
-	handled  bool
+func (e *Event) fire(data interface{}) {
+	for index := 0; index < len(e.callbacks); index++ {
+		e.callbacks[index].(func(interface{}))(data)
+	}
 }
 
-type keyEvent struct {
-	keyCode int
-	event
+func (e *Event) registerCallback(callback interface{}) {
+	e.callbacks = append(e.callbacks, callback)
 }
 
-// KeyPressedEvent é uma struct contendo um keyEvent
-type KeyPressedEvent struct {
-	keyEvent
+func (e *Event) unregisterCallback(callback interface{}, i int) {
+	e.callbacks = append(e.callbacks[:i], e.callbacks[i+1:]...)
 }
 
-// NewKeyPressedEvent é um contrutor que instancia um KeyPressedEvent
-func NewKeyPressedEvent(code int) KeyPressedEvent {
-	return KeyPressedEvent{
-		keyEvent{code, event{KEYPRESSED, KEYBOARDEVENT, "KeyPressedEvent", false}},
+// Dispatcher é a estrutura que toma conta dos eventos
+type Dispatcher struct {
+	events map[string]Event
+}
+
+func (d *Dispatcher) dispatch(name string, data interface{}) {
+	event := d.events[name]
+	event.fire(data)
+}
+
+func (d *Dispatcher) on(name string, callback interface{}) {
+	event := d.events[name]
+	if event.name != "" {
+		event = Event{name, make([]interface{}, 1)}
+	}
+	event.registerCallback(callback)
+}
+
+func (d *Dispatcher) off(name string, callback interface{}) {
+	event := d.events[name]
+	if event.name != "" {
+		for i := 0; i < len(event.callbacks); i++ {
+			if callback == event.callbacks[i] {
+				event.unregisterCallback(callback, i)
+				if len(event.callbacks) == 0 {
+					delete(d.events, name)
+				}
+			}
+		}
 	}
 }
