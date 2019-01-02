@@ -23,6 +23,11 @@ const (
 	WINDOWEVENT
 )
 
+// Ievent é a interface que que todos os eventos devem implementar
+type Ievent interface {
+	Log() string
+}
+
 type event struct {
 	id       eventID
 	category eventCategory
@@ -35,12 +40,14 @@ type keyEvent struct {
 	event
 }
 
-type keyPressedEvent struct {
+// KeyPressedEvent é uma struct contendo um keyEvent
+type KeyPressedEvent struct {
 	keyEvent
 }
 
-func NewKeyPressedEvent(code int) keyPressedEvent {
-	return keyPressedEvent{
-		keyEvent{code},
+// NewKeyPressedEvent é um contrutor que instancia um KeyPressedEvent
+func NewKeyPressedEvent(code int) KeyPressedEvent {
+	return KeyPressedEvent{
+		keyEvent{code, event{KEYPRESSED, KEYBOARDEVENT, "KeyPressedEvent", false}},
 	}
 }

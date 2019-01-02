@@ -2,11 +2,13 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
-type player struct {
+// Player é uma estrutura contendo as informações básicas do jogador
+type Player struct {
 	texture rl.Texture2D
 }
 
-func newPlayer() player {
-	p := player{}
+//NewPlayer retorna uma nova instancia de player
+func NewPlayer() Player {
+	p := Player{}
 	return p
 }
