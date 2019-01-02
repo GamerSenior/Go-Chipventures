@@ -23,12 +23,22 @@ const (
 	WINDOWEVENT
 )
 
+// TODO implementar os enums definidos anteriormente para
+// filtrar melhor os tipos de eventos
+
 // Event é a estrutura básica de um evento
 type Event struct {
 	name string
 	// id        eventID
 	// category  eventCategory
 	callbacks []interface{}
+}
+
+// NewEvent inicializa um novo evento
+func NewEvent(name string) (e Event) {
+	e.name = name
+	e.callbacks = make([]interface{}, 1)
+	return
 }
 
 func (e *Event) fire(data interface{}) {
@@ -58,7 +68,7 @@ func (d *Dispatcher) dispatch(name string, data interface{}) {
 func (d *Dispatcher) on(name string, callback interface{}) {
 	event := d.events[name]
 	if event.name != "" {
-		event = Event{name, make([]interface{}, 1)}
+		event = NewEvent(name)
 	}
 	event.registerCallback(callback)
 }
