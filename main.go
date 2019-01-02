@@ -1,20 +1,19 @@
 package main
 
 import (
-	"container/list"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // Game struct contendo todos os dados do jogo
 type Game struct {
-	ScreenWidth  int32
-	ScreenHeight int32
-	Title        string
-	FrameCounter int32
-	GameOver     bool
-	Pause        bool
-	Handlers     *list.List
+	Player             Player
+	ScreenWidth        int32
+	ScreenHeight       int32
+	Title              string
+	FrameCounter       int32
+	GameOver           bool
+	Pause              bool
+	KeyboardDispatcher Dispatcher
 }
 
 func main() {
@@ -22,13 +21,18 @@ func main() {
 	game.Init()
 
 	rl.InitWindow(game.ScreenWidth, game.ScreenHeight, game.Title)
-	InitSystems(game)
-	//rl.InitWindow(int32(600), int32(400), "Teste")
+	InitSystems(&game)
 
 	rl.SetTargetFPS(int32(60))
 	for !rl.WindowShouldClose() {
 
+		key := rl.GetKeyPressed()
+		if key != -1 {
+			game.KeyboardDispatcher.dispatch("keyPressed", &game)
+		}
+
 		rl.BeginDrawing()
+		game.Player.Update()
 		rl.ClearBackground(rl.RayWhite)
 		rl.EndDrawing()
 	}
@@ -43,6 +47,6 @@ func (game *Game) Init() {
 	game.FrameCounter = 60
 	game.GameOver = false
 	game.Pause = false
-	game.Handlers = list.New()
 	game.Title = "Chipventures - In Go Lang"
+	game.Player = NewPlayer()
 }
