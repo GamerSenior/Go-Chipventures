@@ -8,26 +8,26 @@ import (
 
 // InitSystems inicializa os principais sistemas da aplicação
 func InitSystems(game *Game) {
-	keyboardDispatcher := NewDispatcher()
+	dispatcher := NewDispatcher()
 	fmt.Println("Dispatcher do Keyboard criado")
-	keyboardDispatcher.on("keyPressed", onKeyPressed)
-	keyboardDispatcher.on("movePlayer", movePlayer)
-	game.KeyboardDispatcher = keyboardDispatcher
+	dispatcher.on("keyPressed", onKeyPressed)
+	dispatcher.on("movePlayer", movePlayer)
+	game.Dispatcher = dispatcher
 }
 
 func onKeyPressed(i ...interface{}) {
 	game := i[0].(*Game)
 	if rl.IsKeyDown(rl.KeyS) {
-		game.KeyboardDispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 0, Y: 1})
+		game.Dispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 0, Y: 1})
 	}
 	if rl.IsKeyDown(rl.KeyW) {
-		game.KeyboardDispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 0, Y: -1})
+		game.Dispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 0, Y: -1})
 	}
 	if rl.IsKeyDown(rl.KeyD) {
-		game.KeyboardDispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 1, Y: 0})
+		game.Dispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 1, Y: 0})
 	}
 	if rl.IsKeyDown(rl.KeyA) {
-		game.KeyboardDispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: -1, Y: 0})
+		game.Dispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: -1, Y: 0})
 	}
 }
 

@@ -6,14 +6,15 @@ import (
 
 // Game struct contendo todos os dados do jogo
 type Game struct {
-	Player             Player
-	ScreenWidth        int32
-	ScreenHeight       int32
-	Title              string
-	FrameCounter       int32
-	GameOver           bool
-	Pause              bool
-	KeyboardDispatcher Dispatcher
+	Player       Player
+	ScreenWidth  int32
+	ScreenHeight int32
+	Title        string
+	FrameCounter int32
+	GameOver     bool
+	Pause        bool
+
+	Dispatcher Dispatcher
 }
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 
 		key := rl.GetKeyPressed()
 		if key != -1 {
-			game.KeyboardDispatcher.dispatch("keyPressed", &game)
+			game.Dispatcher.dispatch("keyPressed", &game)
 		}
 
 		rl.BeginDrawing()
