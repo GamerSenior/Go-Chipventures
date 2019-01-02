@@ -4,10 +4,14 @@ import (
 	"fmt"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	box2d "github.com/neguse/go-box2d-lite/box2dlite"
 )
 
 // InitSystems inicializa os principais sistemas da aplicação
 func InitSystems(game *Game) {
+	gravity := box2d.Vec2{X: 0.0, Y: -10.0}
+	game.World = box2d.NewWorld(gravity, 10)
+
 	dispatcher := NewDispatcher()
 	fmt.Println("Dispatcher do Keyboard criado")
 	dispatcher.on("keyPressed", onKeyPressed)
