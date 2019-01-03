@@ -11,6 +11,7 @@ import (
 func InitSystems(game *Game) {
 	gravity := box2d.Vec2{X: 0.0, Y: -10.0}
 	game.World = box2d.NewWorld(gravity, 10)
+	game.Player = NewPlayer()
 
 	dispatcher := NewDispatcher()
 	fmt.Println("Dispatcher do Keyboard criado")
