@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -54,10 +53,10 @@ func main() {
 
 		game.Draw()
 
-		//-----------------
-		fmt.Println("Ground Position:", b1.Position)
-		fmt.Println("Player position: ", game.Player.rigidBody.Position)
-		//-----------------
+		//------ Debbuging --------
+		// fmt.Println("Ground Position:", b1.Position)
+		// fmt.Println("Player position: ", game.Player.rigidBody.Position)
+		//-------------------------
 
 		rl.ClearBackground(rl.RayWhite)
 		rl.EndDrawing()
