@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type eventID int
 
 // Enum contendo todos os possíveis eventos
@@ -28,31 +30,32 @@ const (
 
 // Event é a estrutura básica de um evento
 type Event struct {
-	name string
+	Name string
 	// id        eventID
 	// category  eventCategory
-	callbacks []interface{}
+	Callbacks []interface{}
 }
 
 // NewEvent inicializa um novo evento
 func NewEvent(name string) (e Event) {
-	e.name = name
-	e.callbacks = make([]interface{}, 1)
+	e.Name = name
+	e.Callbacks = make([]interface{}, 0)
 	return
 }
 
-func (e *Event) fire(data interface{}) {
-	for index := 0; index < len(e.callbacks); index++ {
-		e.callbacks[index].(func(interface{}))(data)
+func (e *Event) fire(data ...interface{}) {
+	for index := 0; index < len(e.Callbacks); index++ {
+		e.Callbacks[index].(func(...interface{}))(data...)
 	}
 }
 
 func (e *Event) registerCallback(callback interface{}) {
-	e.callbacks = append(e.callbacks, callback)
+	e.Callbacks = append(e.Callbacks, callback)
+	fmt.Println("Callback registrada")
 }
 
 func (e *Event) unregisterCallback(callback interface{}, i int) {
-	e.callbacks = append(e.callbacks[:i], e.callbacks[i+1:]...)
+	e.Callbacks = append(e.Callbacks[:i], e.Callbacks[i+1:]...)
 }
 
 // Dispatcher é a estrutura que toma conta dos eventos
@@ -60,26 +63,38 @@ type Dispatcher struct {
 	events map[string]Event
 }
 
-func (d *Dispatcher) dispatch(name string, data interface{}) {
-	event := d.events[name]
-	event.fire(data)
+// NewDispatcher instancia um novo dispatcher
+func NewDispatcher() (d Dispatcher) {
+	d.events = make(map[string]Event)
+	return
+}
+
+func (d *Dispatcher) dispatch(name string, data ...interface{}) {
+	fmt.Println("Emitindo evento [", name, "] -> ", data)
+	event, ok := d.events[name]
+	if ok {
+		event.fire(data...)
+	}
 }
 
 func (d *Dispatcher) on(name string, callback interface{}) {
-	event := d.events[name]
-	if event.name != "" {
+	event, ok := d.events[name]
+	if !ok {
+		fmt.Println("Evento não existe, criando novo evento...")
 		event = NewEvent(name)
 	}
+	fmt.Println("Registrando callback do evento: ", name)
 	event.registerCallback(callback)
+	d.events[name] = event
 }
 
 func (d *Dispatcher) off(name string, callback interface{}) {
-	event := d.events[name]
-	if event.name != "" {
-		for i := 0; i < len(event.callbacks); i++ {
-			if callback == event.callbacks[i] {
+	event, ok := d.events[name]
+	if ok {
+		for i := 0; i < len(event.Callbacks); i++ {
+			if callback == event.Callbacks[i] {
 				event.unregisterCallback(callback, i)
-				if len(event.callbacks) == 0 {
+				if len(event.Callbacks) == 0 {
 					delete(d.events, name)
 				}
 			}
