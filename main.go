@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"math"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 	box2d "github.com/neguse/go-box2d-lite/box2dlite"
 )
@@ -31,6 +34,12 @@ func main() {
 
 	// Testando box2D
 	game.World.Clear()
+	var b1 box2d.Body
+	b1.Set(&box2d.Vec2{X: 100.0, Y: 20.0}, math.MaxFloat64)
+	b1.Position = box2d.Vec2{X: 0.0, Y: -17}
+	game.World.AddBody(&b1)
+
+	game.World.AddBody(&game.Player.rigidBody)
 	//---------------
 
 	for !rl.WindowShouldClose() {
@@ -44,6 +53,11 @@ func main() {
 		game.Player.Update()
 
 		game.Draw()
+
+		//-----------------
+		fmt.Println("Ground Position:", b1.Position)
+		fmt.Println("Player position: ", game.Player.rigidBody.Position)
+		//-----------------
 
 		rl.ClearBackground(rl.RayWhite)
 		rl.EndDrawing()
