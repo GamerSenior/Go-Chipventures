@@ -20,6 +20,7 @@ type Game struct {
 	Dispatcher Dispatcher
 	World      *box2d.World
 	TimeStep   float64
+	KeysDown   map[int32]bool
 }
 
 func main() {
@@ -36,6 +37,7 @@ func main() {
 	var b1 box2d.Body
 	b1.Set(&box2d.Vec2{X: 100.0, Y: 20.0}, math.MaxFloat64)
 	b1.Position = box2d.Vec2{X: 0.0, Y: -17}
+	b1.Friction = 0.5
 	game.World.AddBody(&b1)
 
 	game.World.AddBody(&game.Player.rigidBody)
@@ -48,10 +50,13 @@ func main() {
 		if key != -1 {
 			game.Dispatcher.dispatch("keyPressed", &game)
 		}
+		for k := range game.KeysDown {
+			if rl.IsKeyReleased(k) {
+				game.Dispatcher.dispatch("keyReleased", &game, k)
+			}
+		}
 
 		game.Player.Update()
-
-		game.Draw()
 
 		//------ Debbuging --------
 		// fmt.Println("Ground Position:", b1.Position)
@@ -69,13 +74,6 @@ func main() {
 	rl.CloseWindow()
 }
 
-// Draw desenha todos os objetos pertencentes ao mundo
-func (g *Game) Draw() {
-	// for _, b := range g.World.Bodies {
-	// Implementar funcão de desenhar bodies
-	// }
-}
-
 // Init inicializa estrutura do jogo
 func (g *Game) Init() {
 	g.ScreenHeight = 400
@@ -84,4 +82,5 @@ func (g *Game) Init() {
 	g.GameOver = false
 	g.Pause = false
 	g.Title = "Chipventures - In Go Lang"
+	g.KeysDown = make(map[int32]bool)
 }

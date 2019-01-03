@@ -17,6 +17,7 @@ func InitSystems(game *Game) {
 	dispatcher := NewDispatcher()
 	fmt.Println("Dispatcher do Keyboard criado")
 	dispatcher.on("keyPressed", onKeyPressed)
+	dispatcher.on("keyReleased", onKeyReleased)
 	dispatcher.on("movePlayer", movePlayer)
 	game.Dispatcher = dispatcher
 }
@@ -24,27 +25,39 @@ func InitSystems(game *Game) {
 func onKeyPressed(i ...interface{}) {
 	game := i[0].(*Game)
 	if rl.IsKeyDown(rl.KeyS) {
+		game.KeysDown[rl.KeyS] = true
 		// game.Dispatcher.dispatch("movePlayer", &game.Player, rl.Vector2{X: 0, Y: 1})
 	}
 	if rl.IsKeyPressed(rl.KeyW) {
-		game.Dispatcher.dispatch("movePlayer", &game.Player, box2d.Vec2{X: 0, Y: -1})
+		game.KeysDown[rl.KeyW] = true
+		game.Dispatcher.dispatch("movePlayer", game, box2d.Vec2{X: 0, Y: -1})
 	}
 	if rl.IsKeyDown(rl.KeyD) {
-		game.Dispatcher.dispatch("movePlayer", &game.Player, box2d.Vec2{X: 1, Y: 0})
+		game.KeysDown[rl.KeyD] = true
+		game.Dispatcher.dispatch("movePlayer", game, box2d.Vec2{X: 1, Y: 0})
 	}
 	if rl.IsKeyDown(rl.KeyA) {
-		game.Dispatcher.dispatch("movePlayer", &game.Player, box2d.Vec2{X: -1, Y: 0})
+		game.KeysDown[rl.KeyA] = true
+		game.Dispatcher.dispatch("movePlayer", game, box2d.Vec2{X: -1, Y: 0})
 	}
 }
 
+func onKeyReleased(i ...interface{}) {
+	game := i[0].(*Game)
+	key := i[1].(int32)
+	fmt.Println("Key released: ", key)
+	delete(game.KeysDown, key)
+}
+
 func movePlayer(i ...interface{}) {
-	player := i[0].(*Player)
+	// game := i[0].(*Game)
+	player := &i[0].(*Game).Player
 	mVector := i[1].(box2d.Vec2)
+
 	if mVector.Y != 0 && math.Round(player.rigidBody.Velocity.Y) == 0 {
 		player.rigidBody.Velocity.Y = mVector.Y * -5
 	}
-	player.rigidBody.Velocity.X = mVector.X * -1
-	// speed := i[1].(rl.Vector2)
-	// player.position.X = player.position.X + speed.X*player.speed.X
-	// player.position.Y = player.position.Y + speed.Y*player.speed.Y
+	fmt.Println("mVector: ", mVector.X)
+	fmt.Println("Player velocity: ", math.Round(player.rigidBody.Velocity.X*100)/100)
+	player.rigidBody.Velocity.X = mVector.X * -2
 }

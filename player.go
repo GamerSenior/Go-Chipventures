@@ -9,7 +9,6 @@ import (
 type Player struct {
 	texture   rl.Texture2D
 	rigidBody box2d.Body
-	speed     rl.Vector2
 }
 
 //NewPlayer retorna uma nova instancia de player
@@ -20,9 +19,7 @@ func NewPlayer() (p Player) {
 
 	p.rigidBody.Set(&box2d.Vec2{X: 1.0, Y: 1.0}, 100.0)
 	p.rigidBody.Position = box2d.Vec2{X: 0.0, Y: 0.0}
-	p.rigidBody.Friction = 1
-
-	p.speed = rl.NewVector2(float32(2), float32(2))
+	p.rigidBody.Friction = 0.2
 	return
 }
 
