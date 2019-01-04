@@ -7,6 +7,9 @@ import (
 	box2d "github.com/neguse/go-box2d-lite/box2dlite"
 )
 
+// PPM (Pixels por Metro)
+const PPM float64 = 100.0
+
 // Game struct contendo todos os dados do jogo
 type Game struct {
 	Player       Player
@@ -16,6 +19,7 @@ type Game struct {
 	FrameCounter int32
 	GameOver     bool
 	Pause        bool
+	Debbug       bool
 
 	Dispatcher Dispatcher
 	World      *box2d.World
@@ -35,8 +39,8 @@ func main() {
 	// Testando box2D
 	game.World.Clear()
 	var b1 box2d.Body
-	b1.Set(&box2d.Vec2{X: 100.0, Y: 20.0}, math.MaxFloat64)
-	b1.Position = box2d.Vec2{X: 0.0, Y: -17}
+	b1.Set(&box2d.Vec2{X: 100.0, Y: 2.0}, math.MaxFloat64)
+	b1.Position = box2d.Vec2{X: 0.0, Y: -(float64(game.ScreenHeight) / PPM)}
 	b1.Friction = 0.5
 	game.World.AddBody(&b1)
 
@@ -59,6 +63,9 @@ func main() {
 		game.Player.Update()
 
 		//------ Debbuging --------
+		if game.Debbug {
+			DrawHitbox(game.Player)
+		}
 		// fmt.Println("Ground Position:", b1.Position)
 		// fmt.Println("Player position: ", game.Player.rigidBody.Position)
 		//-------------------------
@@ -83,4 +90,16 @@ func (g *Game) Init() {
 	g.Pause = false
 	g.Title = "Chipventures - In Go Lang"
 	g.KeysDown = make(map[int32]bool)
+	g.Debbug = true
+}
+
+// GameObject é uma interface que qualquer objeto do jogo deve implementar
+type GameObject interface {
+	GetHitbox() rl.Rectangle
+}
+
+// DrawHitbox desenha na janela a hitbox de um GameObject
+func DrawHitbox(o GameObject) {
+
+	rl.DrawRectangleLinesEx(o.GetHitbox(), 1, rl.Green)
 }
