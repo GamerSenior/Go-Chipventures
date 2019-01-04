@@ -39,13 +39,18 @@ func main() {
 	// Testando box2D
 	game.World.Clear()
 	var b1 box2d.Body
-	b1.Set(&box2d.Vec2{X: 100.0, Y: 2.0}, math.MaxFloat64)
-	b1.Position = box2d.Vec2{X: 0.0, Y: -(float64(game.ScreenHeight) / PPM)}
+	floorY2 := 32 / PPM
+	b1.Set(&box2d.Vec2{X: 100.0, Y: floorY2}, math.MaxFloat64)
+	b1.Position = box2d.Vec2{X: 0.0, Y: -(float64(game.ScreenHeight) / PPM) + 1}
 	b1.Friction = 0.5
 	game.World.AddBody(&b1)
 
 	game.World.AddBody(&game.Player.rigidBody)
 	//---------------
+
+	// Testando Draw de Tileset
+	ft := loadTileset("resources/tileset.png")
+	// ---------------
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -65,7 +70,12 @@ func main() {
 		//------ Debbuging --------
 		if game.Debbug {
 			DrawHitbox(game.Player)
+			DrawHitboxRect(GetHitbox(b1))
 		}
+		rl.DrawTextureRec(ft, rl.Rectangle{0, 0, 32, 32}, rl.Vector2{0, 768}, rl.White)
+		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{32, 768}, rl.White)
+		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{64, 768}, rl.White)
+		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{96, 768}, rl.White)
 		// fmt.Println("Ground Position:", b1.Position)
 		// fmt.Println("Player position: ", game.Player.rigidBody.Position)
 		//-------------------------
@@ -100,6 +110,17 @@ type GameObject interface {
 
 // DrawHitbox desenha na janela a hitbox de um GameObject
 func DrawHitbox(o GameObject) {
-
 	rl.DrawRectangleLinesEx(o.GetHitbox(), 1, rl.Green)
+}
+
+func DrawHitboxRect(r rl.Rectangle) {
+	rl.DrawRectangleLinesEx(r, 1, rl.Green)
+}
+
+func GetHitbox(b box2d.Body) (r rl.Rectangle) {
+	r.X = float32(b.Position.X * -PPM)
+	r.Y = float32(b.Position.Y * -PPM)
+	r.Width = float32(b.Width.X * PPM)
+	r.Height = float32(b.Width.Y * PPM)
+	return
 }
