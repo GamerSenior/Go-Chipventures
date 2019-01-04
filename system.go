@@ -8,6 +8,10 @@ import (
 	box2d "github.com/neguse/go-box2d-lite/box2dlite"
 )
 
+const meterToPixel = 100.0
+const offsetX = 6.0
+const offsetY = 4.0
+
 // InitSystems inicializa os principais sistemas da aplicação
 func InitSystems(game *Game) {
 	gravity := box2d.Vec2{X: 0.0, Y: -10.0}
@@ -55,9 +59,9 @@ func movePlayer(i ...interface{}) {
 	mVector := i[1].(box2d.Vec2)
 
 	if mVector.Y != 0 && math.Round(player.rigidBody.Velocity.Y) == 0 {
-		player.rigidBody.Velocity.Y = mVector.Y * -5
+		player.rigidBody.Velocity.Y = mVector.Y * -8
 	}
 	fmt.Println("mVector: ", mVector.X)
 	fmt.Println("Player velocity: ", math.Round(player.rigidBody.Velocity.X*100)/100)
-	player.rigidBody.Velocity.X = mVector.X * -2
+	player.rigidBody.Velocity.X = mVector.X * -5
 }

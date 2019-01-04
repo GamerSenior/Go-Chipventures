@@ -63,7 +63,7 @@ func main() {
 		// fmt.Println("Player position: ", game.Player.rigidBody.Position)
 		//-------------------------
 
-		rl.ClearBackground(rl.RayWhite)
+		rl.ClearBackground(rl.Blue)
 		rl.EndDrawing()
 
 		game.TimeStep = float64(rl.GetFrameTime())
@@ -76,8 +76,8 @@ func main() {
 
 // Init inicializa estrutura do jogo
 func (g *Game) Init() {
-	g.ScreenHeight = 400
-	g.ScreenWidth = 600
+	g.ScreenHeight = 800
+	g.ScreenWidth = 1280
 	g.FrameCounter = 60
 	g.GameOver = false
 	g.Pause = false
