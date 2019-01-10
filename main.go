@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -49,7 +50,7 @@ func main() {
 	//---------------
 
 	// Testando Draw de Tileset
-	ft := loadTileset("resources/tileset.png")
+	// ft := loadTileset("resources/tileset.png")
 	// ---------------
 
 	for !rl.WindowShouldClose() {
@@ -72,12 +73,21 @@ func main() {
 			DrawHitbox(game.Player)
 			DrawHitboxRect(GetHitbox(b1))
 		}
-		rl.DrawTextureRec(ft, rl.Rectangle{0, 0, 32, 32}, rl.Vector2{0, 768}, rl.White)
-		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{32, 768}, rl.White)
-		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{64, 768}, rl.White)
-		rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{96, 768}, rl.White)
-		// fmt.Println("Ground Position:", b1.Position)
-		// fmt.Println("Player position: ", game.Player.rigidBody.Position)
+		// rl.DrawTextureRec(ft, rl.Rectangle{0, 0, 32, 32}, rl.Vector2{0, 768}, rl.White)
+		// rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{32, 768}, rl.White)
+		// rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{64, 768}, rl.White)
+		// rl.DrawTextureRec(ft, rl.Rectangle{32, 0, 32, 32}, rl.Vector2{96, 768}, rl.White)
+
+		fmt.Println("Ground Position:", b1.Position)
+		fmt.Printf("Player position: %.2f\n", game.Player.rigidBody.Position)
+
+		contacts := box2d.Collide(&b1, &game.Player.rigidBody)
+		if len(contacts) > 0 {
+			fmt.Println("Contact point 1: ", contacts[0].Position)
+			fmt.Println("Contact point 2: ", contacts[1].Position)
+		}
+		// fmt.Printf("Collision point: [%.2f, %.2f]", x1, y1)
+
 		//-------------------------
 
 		rl.ClearBackground(rl.Blue)
